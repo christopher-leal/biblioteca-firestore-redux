@@ -9,7 +9,7 @@ const NuevoLibro = ({ history }) => {
 	const [ editorial, setEditorial ] = useState('');
 	const [ isbn, setIsbn ] = useState('');
 	const [ existencia, setExistencia ] = useState('');
-
+	const prestados = [];
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (
@@ -28,7 +28,7 @@ const NuevoLibro = ({ history }) => {
 		await firestore
 			.add(
 				{ collection: 'libros' },
-				{ titulo, editorial, isbn, existencia }
+				{ titulo, editorial, isbn, existencia, prestados }
 			)
 			.then(() => {
 				Swal.fire(
@@ -36,7 +36,7 @@ const NuevoLibro = ({ history }) => {
 					'Libro agregado correctamente',
 					'success'
 				);
-				history.push('/libros');
+				history.push('/');
 			});
 	};
 	return (
