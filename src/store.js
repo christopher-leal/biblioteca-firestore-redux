@@ -5,15 +5,7 @@ import { createStore, combineReducers } from 'redux';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore'; // <- needed if using firestore
 
-const firebaseConfig = {
-	apiKey: 'AIzaSyB_tOnFxJW1YVDorwAfA47LzUSEQ0WYn_Q',
-	authDomain: 'almacenamiento-remoto-828ae.firebaseapp.com',
-	databaseURL: 'https://almacenamiento-remoto-828ae.firebaseio.com',
-	projectId: 'almacenamiento-remoto-828ae',
-	storageBucket: 'almacenamiento-remoto-828ae.appspot.com',
-	messagingSenderId: '1059352880497',
-	appId: '1:1059352880497:web:afe6eb4e8d2286322e02d0'
-};
+const firebaseConfig = process.env.REACT_APP_CONFIG;
 
 // react-redux-firebase config
 const rrfConfig = {

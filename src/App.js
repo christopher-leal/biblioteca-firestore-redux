@@ -9,6 +9,7 @@ import Suscriptor from './components/Suscriptores/Suscriptor';
 import NuevoSuscriptor from './components/Suscriptores/NuevoSuscriptor';
 import EditarSuscriptor from './components/Suscriptores/EditarSuscriptor';
 import Navbar from './components/layouts/Navbar';
+
 function App() {
 	return (
 		<Provider store={store}>
@@ -20,7 +21,10 @@ function App() {
 							<Route
 								exact
 								path="/suscriptor/:id"
-								component={Suscriptor}
+								render={({ match }) => {
+									const { id } = match.params;
+									return <Suscriptor id={id} />;
+								}}
 							/>
 							<Route
 								exact
