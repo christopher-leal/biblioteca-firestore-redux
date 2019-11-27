@@ -5,7 +5,15 @@ import { createStore, combineReducers } from 'redux';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore'; // <- needed if using firestore
 
-const firebaseConfig = process.env.REACT_APP_CONFIG;
+const firebaseConfig = {
+	apiKey: process.env.REACT_APP_apiKey,
+	authDomain: process.env.REACT_APP_authDomain,
+	databaseURL: process.env.REACT_APP_databaseURL,
+	projectId: process.env.REACT_APP_projectId,
+	storageBucket: process.env.REACT_APP_storageBucket,
+	messagingSenderId: process.env.REACT_APP_messagingSenderId,
+	appId: process.env.REACT_APP_appId
+};
 
 // react-redux-firebase config
 const rrfConfig = {
