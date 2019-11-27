@@ -17,10 +17,9 @@ const Suscriptores = () => {
 	const suscriptores = useSelector(
 		(state) => state.firestore.ordered.suscriptores
 	);
+
 	const firestore = useFirestore();
-	if (!isLoaded(suscriptores)) {
-		return <Spinner />;
-	}
+	if (!isLoaded(suscriptores) || !suscriptores) return <Spinner />;
 
 	if (isEmpty(suscriptores)) {
 		return <div>Todos List Is Empty</div>;
