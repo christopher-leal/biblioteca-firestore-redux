@@ -22,7 +22,7 @@ const Libros = () => {
 	if (isEmpty(libros)) {
 		return <h1 className="text-center">No hay libros para mostrar</h1>;
 	}
-	const eliminarSuscriptor = (id) => {
+	const eliminarLibro = (id) => {
 		Swal.fire({
 			title: 'Estas seguro?',
 			text: 'Una vez eliminado el libro no se podra recuperar!',
@@ -49,29 +49,33 @@ const Libros = () => {
 		<div className="row">
 			<div className="col-md-12 mb-4">
 				<Link to={'/libros/nuevo'} className="btn btn-primary">
-					<i className="la la-plus" /> Nuevo Libro
+					Nuevo Libro <i className="la la-plus" />
 				</Link>
 			</div>
 			<div className="col-md-8">
 				<h2>
-					<i className="las la-users" />Libros
+					Libros <i className="la la-book" />
 				</h2>
 			</div>
 			<table className="table table-striped mt-4">
 				<thead className="text-light bg-primary">
 					<tr>
-						<th>Nombre</th>
-						<th>Carrera</th>
+						<th>Titulo</th>
+						<th>ISBN</th>
+						<th>Editorial</th>
+						<th>Existencia</th>
+						<th>Diponibles</th>
 						<th>Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
 					{libros.map((libro) => (
 						<tr key={libro.id}>
-							<td>
-								{libro.nombre} {libro.apellido}
-							</td>
-							<td>{libro.carrera}</td>
+							<td>{libro.titulo}</td>
+							<td>{libro.isbn}</td>
+							<td>{libro.editorial}</td>
+							<td>{libro.existencia}</td>
+							<td>{libro.existencia - libro.prestados.length}</td>
 							<td>
 								<Link
 									to={`/libro/${libro.id}`}
@@ -82,7 +86,7 @@ const Libros = () => {
 								</Link>
 								<button
 									className="btn btn-danger btn-block"
-									onClick={() => eliminarSuscriptor(libro.id)}
+									onClick={() => eliminarLibro(libro.id)}
 								>
 									Eliminar libro{' '}
 									<i className="la la-trash-alt" />
