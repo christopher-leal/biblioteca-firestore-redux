@@ -1,7 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useFirestoreConnect, isLoaded, isEmpty } from 'react-redux-firebase';
+import {
+	useFirestoreConnect,
+	isLoaded,
+	isEmpty,
+	useFirestore
+} from 'react-redux-firebase';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import Spinner from '../layouts/Spinner';
 
 const Suscriptores = () => {
@@ -11,7 +17,7 @@ const Suscriptores = () => {
 	const suscriptores = useSelector(
 		(state) => state.firestore.ordered.suscriptores
 	);
-
+	const firestore = useFirestore();
 	if (!isLoaded(suscriptores)) {
 		return <Spinner />;
 	}
@@ -19,6 +25,33 @@ const Suscriptores = () => {
 	if (isEmpty(suscriptores)) {
 		return <div>Todos List Is Empty</div>;
 	}
+	const eliminarSuscriptor = (id) => {
+		Swal.fire({
+			title: 'Estas seguro?',
+			text: 'Una vez eliminado el suscriptor no se podra recuperar!',
+			icon: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Eliminar!',
+			cancelButtonText: 'Cancelar'
+		}).then(async (result) => {
+			if (result.value) {
+				await firestore
+					.delete({
+						collection: 'suscriptores',
+						doc: id
+					})
+					.then(() => {
+						Swal.fire(
+							'Buen trabajo',
+							'Suscriptor eliminado',
+							'success'
+						);
+					});
+			}
+		});
+	};
 	return (
 		<div className="row">
 			<div className="col-md-12 mb-4">
@@ -51,9 +84,17 @@ const Suscriptores = () => {
 									to={`/suscriptor/${suscriptor.id}`}
 									className="btn btn-success btn-block"
 								>
-									<i className="la la-info-circle" /> Mas
-									informacion
+									Mas informacion{' '}
+									<i className="la la-info-circle" />
 								</Link>
+								<button
+									className="btn btn-danger btn-block"
+									onClick={() =>
+										eliminarSuscriptor(suscriptor.id)}
+								>
+									Eliminar suscriptor{' '}
+									<i className="la la-trash-alt" />
+								</button>
 							</td>
 						</tr>
 					))}
