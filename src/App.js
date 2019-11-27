@@ -9,6 +9,11 @@ import Suscriptor from './components/Suscriptores/Suscriptor';
 import NuevoSuscriptor from './components/Suscriptores/NuevoSuscriptor';
 import EditarSuscriptor from './components/Suscriptores/EditarSuscriptor';
 import Navbar from './components/layouts/Navbar';
+import Libros from './components/Libros/Libros';
+import Libro from './components/Libros/Libro';
+import EditarLibro from './components/Libros/EditarLibro';
+import NuevoLibro from './components/Libros/NuevoLibro';
+import PrestarLibro from './components/Libros/PrestarLibro';
 
 function App() {
 	return (
@@ -18,6 +23,25 @@ function App() {
 					<Navbar />
 					<div className="container">
 						<Switch>
+							{/* libros */}
+							<Route exact path="/" component={Libros} />
+							<Route exact path="/libro/:id" component={Libro} />
+							<Route
+								exact
+								path="/libros/nuevo"
+								component={NuevoLibro}
+							/>
+							<Route
+								exact
+								path="/libros/editar/:id"
+								component={EditarLibro}
+							/>
+							<Route
+								exact
+								path="/libros/prestamo/:id"
+								component={PrestarLibro}
+							/>
+							{/* Suscriptores */}
 							<Route
 								exact
 								path="/suscriptor/:id"
@@ -39,7 +63,17 @@ function App() {
 							<Route
 								exact
 								path="/suscriptores/editar/:id"
-								component={EditarSuscriptor}
+								render={({ match }) => {
+									const { id } = match.params;
+									return <EditarSuscriptor id={id} />;
+								}}
+							/>
+							<Route
+								render={() => (
+									<h1 className="text-center">
+										Pagina no encontrada
+									</h1>
+								)}
 							/>
 						</Switch>
 					</div>
