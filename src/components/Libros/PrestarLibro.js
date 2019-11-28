@@ -21,21 +21,6 @@ const PrestarLibro = ({ match, history }) => {
 	);
 	if (!libro) return <Spinner />;
 
-	const solicitarPrestamo = async () => {
-		await firestore
-			.update(
-				{ collection: 'libros', doc: libro.id },
-				{ prestados: libro.prestados }
-			)
-			.then(() => {
-				Swal.fire(
-					'Buen trabajo',
-					'Prestamo registrado con exito',
-					'success'
-				);
-				history.push('/');
-			});
-	};
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const suscriptor = await firestore.get({
@@ -54,6 +39,24 @@ const PrestarLibro = ({ match, history }) => {
 			});
 		}
 	};
+	const solicitarPrestamo = async () => {
+		data.fechaSolicitud = new Date().toLocaleDateString();
+		libro.prestados.push(data);
+		await firestore
+			.update(
+				{ collection: 'libros', doc: libro.id },
+				{ prestados: libro.prestados }
+			)
+			.then(() => {
+				Swal.fire(
+					'Buen trabajo',
+					'Prestamo registrado con exito',
+					'success'
+				);
+				history.push('/');
+			});
+	};
+
 	return (
 		<div className="row">
 			<div className="col-12 mb-4">
