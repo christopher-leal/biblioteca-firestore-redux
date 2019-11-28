@@ -13,7 +13,6 @@ const Suscriptor = ({ id }) => {
 	);
 	if (!suscriptores) return <Spinner />;
 	const suscriptor = suscriptores.find((suscriptor) => suscriptor.id === id);
-	console.log(suscriptor);
 
 	return (
 		<div className="row">
