@@ -6,14 +6,16 @@ import Spinner from '../layouts/Spinner';
 
 const Libro = ({ match }) => {
 	const { id } = match.params;
-	useFirestoreConnect([
-		{ collection: 'libros' } // or 'todos'
-	]);
-	const libros = useSelector((state) => state.firestore.ordered.libros);
-	if (!libros) return <Spinner />;
-	const libro = libros.find((libro) => (libro.id = id));
+	useFirestoreConnect(`libros/${id}`); // sync /posts/postId from firebase into redux
+	const libro = useSelector(
+		({ firestore: { ordered: { libros } } }) => libros && libros[0]
+	);
+	if (!libro) return <Spinner />;
 	let btnPrestamo = libro.existencia - libro.prestados.length > 0 && (
-		<Link to={'/libros/prestamo/id'} className="btn btn-success my-3">
+		<Link
+			to={`/libros/prestamo/${libro.id}`}
+			className="btn btn-success my-3"
+		>
 			Solicitar prestamo
 		</Link>
 	);
