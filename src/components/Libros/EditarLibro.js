@@ -37,7 +37,7 @@ const EditarLibro = ({ match, history }) => {
 		const libroActualizado = {
 			titulo: tituloRef.current.value,
 			editorial: editorialRef.current.value,
-			isnb: isbnRef.current.value,
+			isbn: isbnRef.current.value,
 			existencia: existenciaRef.current.value
 		};
 		await firestore
