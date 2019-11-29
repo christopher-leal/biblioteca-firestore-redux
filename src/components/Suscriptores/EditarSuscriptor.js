@@ -5,7 +5,7 @@ import { useFirestoreConnect, useFirestore } from 'react-redux-firebase';
 import Spinner from '../layouts/Spinner';
 import Swal from 'sweetalert2';
 
-const EditarSuscriptor = ({ id, history }) => {
+const EditarSuscriptor = ({ history, match }) => {
 	// creando los refs
 	const nombreRef = useRef('');
 	const apellidoRef = useRef('');
@@ -20,6 +20,7 @@ const EditarSuscriptor = ({ id, history }) => {
 		(state) => state.firestore.ordered.suscriptores
 	);
 	if (!suscriptores) return <Spinner />;
+	const { id } = match.params;
 	const suscriptor = suscriptores.find((suscrip) => suscrip.id === id);
 	if (!suscriptor) return <Spinner />;
 	const handleSubmit = async (e) => {

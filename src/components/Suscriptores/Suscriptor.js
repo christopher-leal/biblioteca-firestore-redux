@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import Spinner from '../layouts/Spinner';
 
-const Suscriptor = ({ id }) => {
+const Suscriptor = ({ match }) => {
 	useFirestoreConnect([
 		{ collection: 'suscriptores' } // or 'todos'
 	]);
 	const suscriptores = useSelector(
 		(state) => state.firestore.ordered.suscriptores
 	);
+	const { id } = match.params;
 	if (!suscriptores) return <Spinner />;
 	const suscriptor = suscriptores.find((suscriptor) => suscriptor.id === id);
 

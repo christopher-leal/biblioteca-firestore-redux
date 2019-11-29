@@ -14,6 +14,11 @@ import Libro from './components/Libros/Libro';
 import EditarLibro from './components/Libros/EditarLibro';
 import NuevoLibro from './components/Libros/NuevoLibro';
 import PrestarLibro from './components/Libros/PrestarLibro';
+import Login from './components/Auth/Login';
+import {
+	UserIsAuthenticated,
+	UserIsNotAuthenticated
+} from './components/helpers/auth';
 
 function App() {
 	return (
@@ -23,50 +28,59 @@ function App() {
 					<Navbar />
 					<div className="container">
 						<Switch>
+							<Route
+								exact
+								path="/login"
+								component={UserIsNotAuthenticated(Login)}
+							/>
 							{/* libros */}
-							<Route exact path="/" component={Libros} />
-							<Route exact path="/libro/:id" component={Libro} />
+							<Route
+								exact
+								path="/"
+								component={UserIsAuthenticated(Libros)}
+							/>
+							<Route
+								exact
+								path="/libro/:id"
+								component={UserIsAuthenticated(Libro)}
+							/>
 							<Route
 								exact
 								path="/libros/nuevo"
-								component={NuevoLibro}
+								component={UserIsAuthenticated(NuevoLibro)}
 							/>
 							<Route
 								exact
 								path="/libros/editar/:id"
-								component={EditarLibro}
+								component={UserIsAuthenticated(EditarLibro)}
 							/>
 							<Route
 								exact
 								path="/libros/prestamo/:id"
-								component={PrestarLibro}
+								component={UserIsAuthenticated(PrestarLibro)}
 							/>
 							{/* Suscriptores */}
 							<Route
 								exact
 								path="/suscriptor/:id"
-								render={({ match }) => {
-									const { id } = match.params;
-									return <Suscriptor id={id} />;
-								}}
+								component={UserIsAuthenticated(Suscriptor)}
 							/>
 							<Route
 								exact
 								path="/suscriptores"
-								component={Suscriptores}
+								component={UserIsAuthenticated(Suscriptores)}
 							/>
 							<Route
 								exact
 								path="/suscriptores/nuevo"
-								component={NuevoSuscriptor}
+								component={UserIsAuthenticated(NuevoSuscriptor)}
 							/>
 							<Route
 								exact
 								path="/suscriptores/editar/:id"
-								render={({ match }) => {
-									const { id } = match.params;
-									return <EditarSuscriptor id={id} />;
-								}}
+								component={UserIsAuthenticated(
+									EditarSuscriptor
+								)}
 							/>
 							<Route
 								render={() => (

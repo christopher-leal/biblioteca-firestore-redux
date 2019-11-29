@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
+import { useFirestoreConnect, useFirestore } from 'react-redux-firebase';
 import Spinner from '../layouts/Spinner';
+import Swal from 'sweetalert2';
 
-const Libro = ({ match }) => {
+const Libro = ({ match, history }) => {
 	const { id } = match.params;
+	const firestore = useFirestore();
 	useFirestoreConnect(`libros/${id}`); // sync /posts/postId from firebase into redux
 	const libro = useSelector(
 		({ firestore: { ordered: { libros } } }) => libros && libros[0]
@@ -19,6 +21,26 @@ const Libro = ({ match }) => {
 			Solicitar prestamo
 		</Link>
 	);
+
+	const devolverLibro = async (id) => {
+		const prestados = libro.prestados.filter(
+			(prestamo) => prestamo.noControl !== id
+		);
+
+		await firestore
+			.update(
+				{ collection: 'libros', doc: libro.id },
+				{ prestados: prestados }
+			)
+			.then(() => {
+				Swal.fire(
+					'Buen trabajo',
+					'Prestamo devuelto con exito',
+					'success'
+				);
+				history.push('/');
+			});
+	};
 
 	return (
 		<div className="row">
@@ -55,6 +77,49 @@ const Libro = ({ match }) => {
 					{libro.existencia - libro.prestados.length}
 				</p>
 				{btnPrestamo}
+
+				{/* Muestra las personas que tienen los libros */}
+				{libro.prestados.length > 0 && (
+					<h3 className="my-2">
+						Personas que tienen el libro prestado
+					</h3>
+				)}
+				{libro.prestados.map((prestamo) => (
+					<div key={prestamo.noControl} className="card my-2">
+						<h4 className="card-header">
+							{prestamo.nombre} {prestamo.apellido}
+						</h4>
+						<div className="card-body">
+							<p>
+								<span className="font-weight-bold">
+									No.Control:{' '}
+								</span>
+								{prestamo.noControl}
+							</p>
+							<p>
+								<span className="font-weight-bold">
+									Carrera:{' '}
+								</span>
+								{prestamo.carrera}
+							</p>
+							<p>
+								<span className="font-weight-bold">
+									Fecha solicitud:{' '}
+								</span>
+								{prestamo.fechaSolicitud}
+							</p>
+						</div>
+						<div className="card-footer">
+							<button
+								className="btn btn-success font-weight-bold"
+								onClick={() =>
+									devolverLibro(prestamo.noControl)}
+							>
+								Devolver libro
+							</button>
+						</div>
+					</div>
+				))}
 			</div>
 		</div>
 	);
