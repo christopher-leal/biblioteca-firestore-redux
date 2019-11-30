@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
 	useFirestoreConnect,
@@ -9,12 +9,20 @@ import {
 import Spinner from '../layouts/Spinner';
 import Swal from 'sweetalert2';
 import FichaSuscriptor from '../Suscriptores/FichaSuscriptor';
+import { buscarUsuarioAction } from '../../actions/buscarUsuarioAction';
 
+// redux actions
 const PrestarLibro = ({ match, history }) => {
 	const { id } = match.params;
 	const [ busqueda, setBusqueda ] = useState('');
-	const [ data, setData ] = useState({});
 	const firestore = useFirestore();
+	const dispatch = useDispatch();
+
+	const suscriptorState = useSelector((state) => state.suscriptor);
+
+	const datosSuscriptor = (suscriptor) =>
+		dispatch(buscarUsuarioAction(suscriptor));
+
 	useFirestoreConnect(`libros/${id}`); // sync /posts/postId from firebase into redux
 	const libro = useSelector(
 		({ firestore: { ordered: { libros } } }) => libros && libros[0]
@@ -28,20 +36,21 @@ const PrestarLibro = ({ match, history }) => {
 			where: [ 'noControl', '==', busqueda ]
 		});
 		if (!suscriptor.empty) {
-			setData(suscriptor.docs[0].data());
+			// console.log(typeof suscriptor.docs[0].data());
+			datosSuscriptor(suscriptor.docs[0].data());
 		} else {
-			setData({});
+			datosSuscriptor({});
 			Swal.fire({
 				icon: 'error',
 				title: 'Error',
 				text:
-					'No se ha encontrado ningun alumno con ese numero de control!'
+					'No se ha encontrado ningun alumno con ese numero de control'
 			});
 		}
 	};
 	const solicitarPrestamo = async () => {
-		data.fechaSolicitud = new Date().toLocaleDateString();
-		libro.prestados.push(data);
+		suscriptorState.fechaSolicitud = new Date().toLocaleDateString();
+		libro.prestados.push(suscriptorState);
 		await firestore
 			.update(
 				{ collection: 'libros', doc: libro.id },
@@ -91,9 +100,9 @@ const PrestarLibro = ({ match, history }) => {
 							/>
 						</form>
 						{/* Mostrar ficha del alumno */}
-						{!isEmpty(data) && (
+						{!isEmpty(suscriptorState) && (
 							<FichaSuscriptor
-								suscriptor={data}
+								suscriptor={suscriptorState}
 								solicitarPrestamo={solicitarPrestamo}
 							/>
 						)}

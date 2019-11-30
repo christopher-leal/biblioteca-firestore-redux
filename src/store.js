@@ -1,9 +1,11 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore'; // <- needed if using firestore
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { firebaseReducer } from 'react-redux-firebase';
 import { createFirestoreInstance, firestoreReducer } from 'redux-firestore'; // <- needed if using firestore
+import buscarUsuarioReducer from './reducers/buscarUsuarioReducer';
+import thunk from 'redux-thunk';
 
 const firebaseConfig = {
 	apiKey: process.env.REACT_APP_apiKey,
@@ -28,10 +30,13 @@ firebase.initializeApp(firebaseConfig);
 // Initialize other services on firebase instance
 firebase.firestore(); // <- needed if using firestore
 
+// custom reducers
+
 // Add firebase to reducers
 const rootReducer = combineReducers({
 	firebase: firebaseReducer,
-	firestore: firestoreReducer // <- needed if using firestore
+	firestore: firestoreReducer, // <- needed if using firestore
+	suscriptor: buscarUsuarioReducer
 });
 
 // Create store with reducers and initial state
@@ -39,7 +44,11 @@ const initialState = {};
 const store = createStore(
 	rootReducer,
 	initialState,
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+	compose(
+		applyMiddleware(thunk),
+		window.__REDUX_DEVTOOLS_EXTENSION__ &&
+			window.__REDUX_DEVTOOLS_EXTENSION__()
+	)
 );
 
 const rrfProps = {
