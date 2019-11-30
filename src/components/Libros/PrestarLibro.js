@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -22,6 +22,9 @@ const PrestarLibro = ({ match, history }) => {
 
 	const datosSuscriptor = (suscriptor) =>
 		dispatch(buscarUsuarioAction(suscriptor));
+	useEffect(() => {
+		datosSuscriptor({});
+	}, []);
 
 	useFirestoreConnect(`libros/${id}`); // sync /posts/postId from firebase into redux
 	const libro = useSelector(
